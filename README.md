@@ -14,43 +14,50 @@
 clear;
 close;
 
-M = 51;              // Filter length
-fc = 0.4;            // Normalized cutoff frequency (0 to 0.5)
+// Filter specifications
+M = 50;            // Filter order
+fc = 0.4;          // Normalized cutoff frequency (0 to 0.5)
 
-// Create Hanning window
-n = 0:M-1;
-w = 0.5 - 0.5 * cos(2 * %pi * n / (M-1));
+// Sample points
+n = 0:M;
 
-// Ideal impulse response for Low Pass Filter
-hd = sin(2 * %pi * fc * (n - (M-1)/2)) ./ (n - (M-1)/2);
-hd((M-1)/2 + 1) = 2 * %pi * fc;  // fix center value
+// Ideal impulse response of High Pass Filter
+hd = zeros(1, M+1);
+for i = 1:M+1
+    if i == (M/2 + 1) then
+        hd(i) = 1 - 2*fc;
+    else
+        hd(i) = (-sin(2*%pi*fc*(i - (M/2 + 1)))) / (%pi*(i - (M/2 + 1)));
+    end
+end
+
+// Hamming window
+w = 0.54 - 0.46 * cos(2*%pi*n/M);
 
 // Apply window
 h = hd .* w;
 
-// Normalize filter coefficients
-h = h / sum(h);
+// Plot Impulse Response
+figure(1);
+plot(n, h);
+xlabel("n");
+ylabel("h(n)");
+title("Impulse Response of High Pass FIR Filter using Hamming Window");
+xgrid();
 
-// Display coefficients
-disp(h);
-
-// Plot impulse response
-subplot(2,1,1);
-plot(h);
-xlabel('Samples');
-ylabel('Amplitude');
-title('Impulse Response of Low Pass FIR Filter using Hanning Window');
-
-// Frequency response
+// Frequency Response
 [H, f] = frmag(h, 512);
-subplot(2,1,2);
+figure(2);
 plot(f, H);
-xlabel('Normalized Frequency');
-ylabel('Magnitude');
-title('Frequency Response of Low Pass FIR Filter');
+xlabel("Normalized Frequency");
+ylabel("|H(f)|");
+title("Magnitude Response of High Pass FIR Filter using Hamming Window");
+xgrid();
 ```
 # OUTPUT
-<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/51bda046-5b9f-44cd-acf5-20739c6c8ce6" />
+<img width="1917" height="1198" alt="image" src="https://github.com/user-attachments/assets/7d6fc96b-f491-49e6-a667-a57486fa171e" />
+<img width="1916" height="1198" alt="image" src="https://github.com/user-attachments/assets/abc58333-1309-4278-9be1-1868e9e6ceca" />
+
 
 # RESULT
-Thus, a Low Pass FIR Digital Filter was successfully designed using the Hanning window method in SCILAB.
+The High Pass FIR digital filter was successfully designed and its waveform was plotted using the Hamming window method in Scilab.
