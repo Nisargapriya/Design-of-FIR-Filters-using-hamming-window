@@ -3,7 +3,7 @@
 # DESIGN OF LOW PASS FIR DIGITAL FILTER 
 
 # AIM: 
-  To generate design of high pass FIR digital filter using SCILAB 
+  To generate design of low pass FIR digital filter using SCILAB 
 
 # APPARATUS REQUIRED: 
 
@@ -11,53 +11,59 @@
 
 # PROGRAM 
 ```
-clear;
-close;
+clc ; 
+close ; 
+M=input('Enter the Odd Filter Length ='); 
+Wc=input('Enter the Digital Cut off frequency ='); 
+alpha= (M -1)/2 // Center Value 
+ 
+ 
+for n = 1:M  
+ 
+if (n ==alpha+1) 
+hd(n) = Wc/ %pi ; 
+else 
+hd(n) = sin(Wc *((n -1)-alpha)) /(((n -1)-alpha)*%pi); 
+end 
+end 
+ 
+ 
+ 
+// Hamming Window 
+for n = 1:M 
+W(n) = 0.54-(0.46*cos((2*%pi*(n-1))/(M-1))); 
+ 
+end 
+ 
+ 
+ 
+//Windowing filter coefficients 
+h = hd.*W; 
+disp(h,'Filter Coefficients are') 
+ 
+ 
+ 
+[hzm,fr]= frmag (h,256) ; 
+subplot(2 ,1 ,1) 
+plot(2*fr, hzm) 
+ 
+xlabel( ' Normalized Digital Frequency w'); 
+ylabel( 'Magnitude '); 
+title( ' Frequency Response of FIR LPF using Hamming Window ') 
+27 
+ 
+hzm_dB = 20* log10 (hzm); 
+subplot (2 ,1 ,2); 
+plot(2*fr , hzm_dB); 
+ 
+xlabel( ' Normalized Digital Frequency W' ); 
+ylabel( 'Magnitude in dB'); 
+title('Frequency Response of FIR LPF using Hamming Window'); 
 
-// Filter specifications
-M = 50;            // Filter order
-fc = 0.4;          // Normalized cutoff frequency (0 to 0.5)
-
-// Sample points
-n = 0:M;
-
-// Ideal impulse response of High Pass Filter
-hd = zeros(1, M+1);
-for i = 1:M+1
-    if i == (M/2 + 1) then
-        hd(i) = 1 - 2*fc;
-    else
-        hd(i) = (-sin(2*%pi*fc*(i - (M/2 + 1)))) / (%pi*(i - (M/2 + 1)));
-    end
-end
-
-// Hamming window
-w = 0.54 - 0.46 * cos(2*%pi*n/M);
-
-// Apply window
-h = hd .* w;
-
-// Plot Impulse Response
-figure(1);
-plot(n, h);
-xlabel("n");
-ylabel("h(n)");
-title("Impulse Response of High Pass FIR Filter using Hamming Window");
-xgrid();
-
-// Frequency Response
-[H, f] = frmag(h, 512);
-figure(2);
-plot(f, H);
-xlabel("Normalized Frequency");
-ylabel("|H(f)|");
-title("Magnitude Response of High Pass FIR Filter using Hamming Window");
-xgrid();
 ```
 # OUTPUT
-<img width="1917" height="1198" alt="image" src="https://github.com/user-attachments/assets/7d6fc96b-f491-49e6-a667-a57486fa171e" />
-<img width="1916" height="1198" alt="image" src="https://github.com/user-attachments/assets/abc58333-1309-4278-9be1-1868e9e6ceca" />
+<img width="1918" height="1131" alt="image" src="https://github.com/user-attachments/assets/74fe289c-4a9c-4101-b04d-be1b6cfa05b9" />
 
 
 # RESULT
-The High Pass FIR digital filter was successfully designed and its waveform was plotted using the Hamming window method in Scilab.
+Thus, a Low Pass FIR Digital Filter was successfully designed using the Hamming window method in SCILAB
